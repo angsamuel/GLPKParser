@@ -10,6 +10,8 @@
 	<string>pGame</string>
 	<key>IDESourceControlProjectOriginsDictionary</key>
 	<dict>
+		<key>959F15223711F0EF59E837FE19466E1D7FC3F413</key>
+		<string>https://github.com/astralsquid/pGameold.git</string>
 		<key>B0922E6EDA5732016876E0FDD0BE848C46E47468</key>
 		<string>https://github.com/astralsquid/pGame.git</string>
 	</dict>
@@ -17,15 +19,17 @@
 	<string>pGame.xcodeproj</string>
 	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
 	<dict>
-		<key>B0922E6EDA5732016876E0FDD0BE848C46E47468</key>
+		<key>959F15223711F0EF59E837FE19466E1D7FC3F413</key>
 		<string>../..</string>
+		<key>B0922E6EDA5732016876E0FDD0BE848C46E47468</key>
+		<string>../../../pGame</string>
 	</dict>
 	<key>IDESourceControlProjectURL</key>
-	<string>https://github.com/astralsquid/pGame.git</string>
+	<string>https://github.com/astralsquid/pGameold.git</string>
 	<key>IDESourceControlProjectVersion</key>
 	<integer>111</integer>
 	<key>IDESourceControlProjectWCCIdentifier</key>
-	<string>B0922E6EDA5732016876E0FDD0BE848C46E47468</string>
+	<string>959F15223711F0EF59E837FE19466E1D7FC3F413</string>
 	<key>IDESourceControlProjectWCConfigurations</key>
 	<array>
 		<dict>
@@ -35,6 +39,14 @@
 			<string>B0922E6EDA5732016876E0FDD0BE848C46E47468</string>
 			<key>IDESourceControlWCCName</key>
 			<string>pGame</string>
+		</dict>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>959F15223711F0EF59E837FE19466E1D7FC3F413</string>
+			<key>IDESourceControlWCCName</key>
+			<string>pGameold</string>
 		</dict>
 	</array>
 </dict>
