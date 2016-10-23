@@ -1,0 +1,1 @@
+Here's the initial data structure with a very simple example in main.cpp. There's also some file formatting I've been working on which I plan on changing after today, so I'll upload that soon. This definitely requires more cleaning up, but I just wanted to put up most of what I had in case anyone was curious.
