@@ -53,6 +53,7 @@ int main(int argc, const char * argv[]) {
     pair<int,int> trueTargetLocation;
     vector<double> probDistribution;
     pair<int, int> attackerStart;
+    vector<pair<pair<int,int>,pair<int,int>>> barriers;
     int moveCost;
     int predictionReward;
     int trueTargetReward;
@@ -93,6 +94,19 @@ int main(int argc, const char * argv[]) {
                 inFile >> line;
             }
         }
+        if(line == "-barriers"){
+            inFile >> line;
+            while(line!= "-end"){
+                int bCord1x = atoi(line.substr(0,1).c_str());
+                int bCord1y = atoi(line.substr(2,1).c_str());
+                
+                int bCord2x = atoi(line.substr(4,1).c_str());
+                int bCord2y = atoi(line.substr(6,1).c_str());
+                //cout << "tlX " << tlX << "\n";
+                barriers.push_back(make_pair(make_pair(bCord1x,bCord1y),make_pair(bCord2x,bCord2y)));
+                inFile >> line;
+            }
+        }
         if(line == "true_target_location"){
             inFile >> line;
             int tlX = atoi(line.substr(0,1).c_str());
@@ -127,8 +141,11 @@ int main(int argc, const char * argv[]) {
     //for(auto x : targetLocations){
       //  cout << x.first << " * " <<  x.second << "\n";
     //}
-    
-    Board m(width, height, targetLocations, probDistribution, trueTargetLocation, attackerStart, moveCost, predictionReward, trueTargetReward);
+    cout << barriers.size() << " is the b size\n";
+    for(auto x : barriers){
+        //cout << x.first.first << "," << x.first.second << ";" << x.second.first << "," << x.second.second << "\n";
+    }
+    Board m(width, height, targetLocations, probDistribution, trueTargetLocation, attackerStart, moveCost, predictionReward, trueTargetReward, barriers);
     //Board m(width, height, targetLocations, probDistribution, trueTargetLocation, attackerStart, moveCost, predictionReward, trueTargetReward);
     m.printAllNodeInfo();
     

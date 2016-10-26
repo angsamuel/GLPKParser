@@ -68,10 +68,14 @@ private:
     
     //vector of probabilites for each target being the true target
     vector<double> trueTargetProbs;
+    
+    //vector of barriers
+    vector<pair<pair<int,int>,pair<int,int>>> barriers;
 public:
     //default constructor
     Board(){}
-    Board(int w, int h, vector<pair<int,int>> targetLocs, vector<double> targetProbs, pair<int, int> trueTargetLoc, pair<int, int> attackerStart, double mt, double gt, double ttr){
+    Board(int w, int h, vector<pair<int,int>> targetLocs, vector<double> targetProbs, pair<int, int> trueTargetLoc, pair<int, int> attackerStart, double mt, double gt, double ttr, vector<pair<pair<int,int>,pair<int,int>>> newBarriers){
+        barriers = newBarriers;
         trueTargetProbs = targetProbs;
         moveTax = mt;
         guessTax = gt;
@@ -93,10 +97,26 @@ public:
             for(int j=0; j<width; ++j){
                 nodes.at(i).at(j).rCoord = i;
                 nodes.at(i).at(j).cCoord = j;
-                if(i>0){nodes.at(i).at(j).connections.push_back(&nodes.at(i-1).at(j));}
-                if(j>0){nodes.at(i).at(j).connections.push_back(&nodes.at(i).at(j-1));}
-                if(i<height-1){nodes.at(i).at(j).connections.push_back(&nodes.at(i+1).at(j));}
-                if(j<width-1){nodes.at(i).at(j).connections.push_back(&nodes.at(i).at(j+1));}
+                if(i>0){
+                    if(!(std::find(barriers.begin(), barriers.end(), make_pair(make_pair(i,j),make_pair(i-1,j))) != barriers.end())){
+                        nodes.at(i).at(j).connections.push_back(&nodes.at(i-1).at(j));
+                    }
+                }
+                if(j>0){
+                    if(!(std::find(barriers.begin(), barriers.end(), make_pair(make_pair(i,j),make_pair(i,j-1))) != barriers.end())){
+                        nodes.at(i).at(j).connections.push_back(&nodes.at(i).at(j-1));
+                    }
+                }
+                if(i<height-1){
+                    if(!(std::find(barriers.begin(), barriers.end(), make_pair(make_pair(i,j),make_pair(i+1,j))) != barriers.end())){
+                        nodes.at(i).at(j).connections.push_back(&nodes.at(i+1).at(j));
+                    }
+                }
+                if(j<width-1){
+                    if(!(std::find(barriers.begin(), barriers.end(), make_pair(make_pair(i,j),make_pair(i,j+1))) != barriers.end())){
+                    nodes.at(i).at(j).connections.push_back(&nodes.at(i).at(j+1));
+                    }
+                }
             }
         }
         
@@ -149,6 +169,7 @@ public:
     double getTrueTargetReward();
     int getWidth();
     int getHeight();
+    vector<pair<pair<int,int>,pair<int,int>>> getBarriers();
     
 //SET FUNCTIONS------------------------------------------------------------------------------
     //change the true target location

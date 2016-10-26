@@ -114,7 +114,8 @@ void LpGenerator::convertToLp(){
     sort( fVarVec.begin(), fVarVec.end() );
     fVarVec.erase(unique(fVarVec.begin(), fVarVec.end() ), fVarVec.end());
         //---------------------------------------------
-    //cout << fVarVec.size() << std::endl;
+    
+    
     lpFile << fVarVec.at(0);
     for(int i = 1; i<fVarVec.size(); ++i){
         lpFile << " + " << fVarVec.at(i);

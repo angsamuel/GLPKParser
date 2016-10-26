@@ -116,6 +116,11 @@ int Board::getHeight(){
     return height;
 }
 
+vector<pair<pair<int,int>,pair<int,int>>> Board::getBarriers(){
+    return barriers;
+}
+
+
 //SET FUNCTIONS------------------------------------------------------------------------------
 //change the true target location
 void Board::setTrueTargetLoc(pair<int,int> loc){
