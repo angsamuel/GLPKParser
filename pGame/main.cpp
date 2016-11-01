@@ -32,12 +32,14 @@ int main(int argc, const char * argv[]) {
     tP.push_back(.5);
     tP.push_back(.5);
     
+    
     pair<int, int> ttl = make_pair(0,2);
     pair<int, int> aS = make_pair(0,1);
     
     double mt = 1;
     double gt = 1;
     double ttr = 3;
+
     
     //[.5T]---[Start]---[.5F]
     //Board m(w, h, tL, tP, ttl, aS, mt, gt, ttr);
@@ -61,22 +63,22 @@ int main(int argc, const char * argv[]) {
     inFile.open("lpFile.in");
     string line;
     while(inFile >> line){
-        if(line == "width"){
+        if(line == "#width"){
             //cout << line << "|\n";
             inFile >> line;
             //cout << line << "||\n";
             width = atoi(line.c_str());
             //cout << width << "|||\n";
         }
-        if(line == "height"){
+        if(line == "#height"){
             inFile >> line;
             height = atoi(line.c_str());
             
         }
         //cout << "line: " <<line << "\n";
-        if(line == "target_locations"){
+        if(line == "#target_locations"){
             inFile >> line;
-            while(line!= "probability_distribution"){
+            while(line.substr(0,1)!= "#"){
                 int tlX = atoi(line.substr(0,1).c_str());
                 int tlY = atoi(line.substr(2,1).c_str());
                 //cout << "tlX " << tlX << "\n";
@@ -85,18 +87,19 @@ int main(int argc, const char * argv[]) {
             }
             
         }
-        if(line == "probability_distribution"){
+        if(line == "#probability_distribution"){
             inFile >> line;
-            while(line!= "true_target_location"){
+            while(line.substr(0,1)!= "#"){
                 double prob = atof(line.c_str());
                 //cout << "prob: " << prob << "\n";
                 probDistribution.push_back(prob);
                 inFile >> line;
             }
         }
-        if(line == "-barriers"){
+        if(line == "#barriers"){
             inFile >> line;
-            while(line!= "-end"){
+             while(line.substr(0,1)!= "#"){
+                 cout << "wow\n";
                 int bCord1x = atoi(line.substr(0,1).c_str());
                 int bCord1y = atoi(line.substr(2,1).c_str());
                 
@@ -107,40 +110,32 @@ int main(int argc, const char * argv[]) {
                 inFile >> line;
             }
         }
-        if(line == "true_target_location"){
+        if(line == "#true_target_location"){
             inFile >> line;
             int tlX = atoi(line.substr(0,1).c_str());
             int tlY = atoi(line.substr(2,1).c_str());
-            //cout << tlX << "tlx\n";
-            //cout << tlY << "tly\n";
             trueTargetLocation = make_pair(tlX,tlY);
         }
-        if(line == "attacker_start"){
+        if(line == "#attacker_start"){
             inFile >> line;
             int attackerStartX = atoi(line.substr(0,1).c_str());
             int attackerStartY = atoi(line.substr(2,1).c_str());
             attackerStart = make_pair(attackerStartX, attackerStartY);
         }
-        if(line == "move_cost"){
+        if(line == "#move_cost"){
             inFile >> line;
             moveCost = atoi(line.c_str());
         }
-        if(line =="prediction_reward"){
+        if(line =="#prediction_reward"){
             inFile >> line;
             predictionReward = atoi(line.c_str());
         }
-        if(line =="true_target_reward"){
+        if(line =="#true_target_reward"){
             inFile >> line;
             trueTargetReward = atoi(line.c_str());
         }
     }
     
-    //cout << width << "\n";
-    //cout << w << "\n";
-    
-    //for(auto x : targetLocations){
-      //  cout << x.first << " * " <<  x.second << "\n";
-    //}
     cout << barriers.size() << " is the b size\n";
     for(auto x : barriers){
         //cout << x.first.first << "," << x.first.second << ";" << x.second.first << "," << x.second.second << "\n";
