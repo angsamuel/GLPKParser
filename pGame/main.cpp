@@ -15,11 +15,17 @@
 #include <vector>
 #include "LpGenerator.h"
 #include "glpk-4.60/src/glpk.h"
+
+#include <vector>
+#include <string>
+#include <sstream>
+#include <iostream>
 using std::pair;
 using std::make_pair;
 using std::cout;
 using std::ifstream;
 using std::getline;
+using std::stringstream;
 int main(int argc, const char * argv[]) {
     //Board(int width, int height, vector<pair<int,int>> targetLocs, vector<double> targetProbs, pair<int, int> trueTargetLoc, pair<int, int> attackerStart, double mt, double gt, double ttr)
     int w = 3;
@@ -64,25 +70,34 @@ int main(int argc, const char * argv[]) {
     string line;
     while(inFile >> line){
         if(line == "#width"){
-            //cout << line << "|\n";
             inFile >> line;
-            //cout << line << "||\n";
             width = atoi(line.c_str());
-            //cout << width << "|||\n";
         }
         if(line == "#height"){
             inFile >> line;
             height = atoi(line.c_str());
-            
         }
-        //cout << "line: " <<line << "\n";
         if(line == "#target_locations"){
+            /*
+            while(line.substr(0,1)!= "#"){
+             
+                inFile >> line;
+             
+                inFile >> line;
+            }
+            cout << "target locations size: "targetLocations.size() << std::endl;*/
+            
+            
             inFile >> line;
             while(line.substr(0,1)!= "#"){
-                int tlX = atoi(line.substr(0,1).c_str());
-                int tlY = atoi(line.substr(2,1).c_str());
-                //cout << "tlX " << tlX << "\n";
-                targetLocations.push_back(make_pair(tlX,tlY));
+                int i;
+                vector<int> vect;
+                stringstream ss(line);
+                while(ss>>i){
+                    vect.push_back(i);
+                    if(ss.peek() == ' ' || ss.peek() == ','){ss.ignore();}
+                }
+                targetLocations.push_back(make_pair(vect.at(0),vect.at(1)));
                 inFile >> line;
             }
             
@@ -98,7 +113,28 @@ int main(int argc, const char * argv[]) {
         }
         if(line == "#barriers"){
             inFile >> line;
-             while(line.substr(0,1)!= "#"){
+            while(line.substr(0,1)!= "#"){
+                int i;
+                vector<int> vect;
+                stringstream ss(line);
+                while(ss>>i){
+                    vect.push_back(i);
+                    if(ss.peek() == ' ' || ss.peek() == ','){ss.ignore();}
+                    if(ss.peek() == ';'){
+                        ss.ignore();
+                    }
+                }
+                cout << vect.size() << std::endl;
+                cout << vect.at(0) << ", " << vect.at(1) << std::endl;
+                cout << vect.at(2) << ", " << vect.at(3) << std::endl;
+                barriers.push_back(make_pair(make_pair(vect.at(0),vect.at(1)),make_pair(vect.at(2),vect.at(3))));
+                inFile >> line;
+            }
+            
+            
+            
+            
+            /*while(line.substr(0,1)!= "#"){
                  cout << "wow\n";
                 int bCord1x = atoi(line.substr(0,1).c_str());
                 int bCord1y = atoi(line.substr(2,1).c_str());
@@ -108,19 +144,33 @@ int main(int argc, const char * argv[]) {
                 //cout << "tlX " << tlX << "\n";
                 barriers.push_back(make_pair(make_pair(bCord1x,bCord1y),make_pair(bCord2x,bCord2y)));
                 inFile >> line;
-            }
+            }*/
         }
         if(line == "#true_target_location"){
             inFile >> line;
-            int tlX = atoi(line.substr(0,1).c_str());
-            int tlY = atoi(line.substr(2,1).c_str());
-            trueTargetLocation = make_pair(tlX,tlY);
+            //int tlX = atoi(line.substr(0,1).c_str());
+            //int tlY = atoi(line.substr(2,1).c_str());
+            int i;
+            vector<int> vect;
+            stringstream ss(line);
+            while(ss>>i){
+                vect.push_back(i);
+                if(ss.peek() == ' ' || ss.peek() == ','){ss.ignore();}
+            }
+            trueTargetLocation = make_pair(vect.at(0),vect.at(1));
         }
         if(line == "#attacker_start"){
             inFile >> line;
-            int attackerStartX = atoi(line.substr(0,1).c_str());
-            int attackerStartY = atoi(line.substr(2,1).c_str());
-            attackerStart = make_pair(attackerStartX, attackerStartY);
+            //int tlX = atoi(line.substr(0,1).c_str());
+            //int tlY = atoi(line.substr(2,1).c_str());
+            int i;
+            vector<int> vect;
+            stringstream ss(line);
+            while(ss>>i){
+                vect.push_back(i);
+                if(ss.peek() == ' ' || ss.peek() == ','){ss.ignore();}
+            }
+            attackerStart = make_pair(vect.at(0),vect.at(1));
         }
         if(line == "#move_cost"){
             inFile >> line;
@@ -142,7 +192,7 @@ int main(int argc, const char * argv[]) {
     }
     Board m(width, height, targetLocations, probDistribution, trueTargetLocation, attackerStart, moveCost, predictionReward, trueTargetReward, barriers);
     //Board m(width, height, targetLocations, probDistribution, trueTargetLocation, attackerStart, moveCost, predictionReward, trueTargetReward);
-    m.printAllNodeInfo();
+    //m.printAllNodeInfo();
     
     LpGenerator a(m);
     a.convertToLp();
