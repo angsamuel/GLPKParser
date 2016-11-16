@@ -66,14 +66,15 @@ int main(int argc, const char * argv[]) {
     int predictionReward;
     int trueTargetReward;
     ifstream inFile;
+    
     inFile.open("lpFile.in");
     string line;
     while(inFile >> line){
-        if(line == "#width"){
+        if(line == "#columns"){
             inFile >> line;
             width = atoi(line.c_str());
         }
-        if(line == "#height"){
+        if(line == "#rows"){
             inFile >> line;
             height = atoi(line.c_str());
         }
@@ -131,20 +132,6 @@ int main(int argc, const char * argv[]) {
                 inFile >> line;
             }
             
-            
-            
-            
-            /*while(line.substr(0,1)!= "#"){
-                 cout << "wow\n";
-                int bCord1x = atoi(line.substr(0,1).c_str());
-                int bCord1y = atoi(line.substr(2,1).c_str());
-                
-                int bCord2x = atoi(line.substr(4,1).c_str());
-                int bCord2y = atoi(line.substr(6,1).c_str());
-                //cout << "tlX " << tlX << "\n";
-                barriers.push_back(make_pair(make_pair(bCord1x,bCord1y),make_pair(bCord2x,bCord2y)));
-                inFile >> line;
-            }*/
         }
         if(line == "#true_target_location"){
             inFile >> line;

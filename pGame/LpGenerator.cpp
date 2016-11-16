@@ -13,9 +13,16 @@
 #include <iostream>
 #include <fstream>
 #include <cmath>
+#include <unordered_map>
+#include <set>
+using std::set;
 using std::string;
 using std::to_string;
 using std::ofstream;
+using std::unordered_map;
+
+inline size_t key(int i,int j) {return (size_t) i << 32 | (unsigned int) j;}
+
 int LpGenerator::getCeling(){
     //shortest path only works for unobstructed rectangular grids currently
     //a more complete version can be written in later
@@ -39,7 +46,8 @@ string LpGenerator::createLpVar(string pre, pair<int, int> assumedTarget, pair<i
 void LpGenerator::convertToLp(){
     double gTax = gameBoard.getGuessTax();
     double mTax = gameBoard.getMoveTax();
-    
+    set<string> subTo;
+
     vector<string> coefVec;
     vector<string> expectedValues;
     
@@ -51,6 +59,8 @@ void LpGenerator::convertToLp(){
         string variable = createLpVar("V", make_pair(targetLocs.at(i).first, targetLocs.at(i).second),gameBoard.getAtStart());
         expectedValues.push_back(variable);
     }
+
+    
     //open the file
     ofstream lpFile;
     lpFile.open ("lpFile.lp");
@@ -63,7 +73,14 @@ void LpGenerator::convertToLp(){
         }
     }
     //create constraints
+    unordered_map<size_t, vector<string>> fVarMap;
     vector<string> fVarVec;
+    
+    for(int i = 0; i<gameBoard.getHeight(); i++){
+        for(int j = 0; j<gameBoard.getHeight(); j++){
+            fVarMap[key(i,j)] = fVarVec;
+        }
+    }
     
     lpFile << "\n";
     lpFile << "subject to\n";
@@ -97,11 +114,15 @@ void LpGenerator::convertToLp(){
                             lpFile << to_string(coef);
                             auto fTemp = createLpVar("F", t, make_pair(h, w));
                             lpFile << fTemp;
-                            fVarVec.push_back(fTemp);
+    
+                            fVarMap[key(h,w)].push_back(fTemp);
+
                         }
                         lpFile << " - ";
                         lpFile << createLpVar("V", at, ac);
                         lpFile << " <= 0\n";
+                        //used to be zero
+                       // lpFile << trueTargetReward << "\n";
                     }else{
                         lpFile << " = 0\n";
                     }
@@ -111,22 +132,46 @@ void LpGenerator::convertToLp(){
     }
     //probabilities sum to zero
         //can get expensive, look into fixing his later
-    sort( fVarVec.begin(), fVarVec.end() );
-    fVarVec.erase(unique(fVarVec.begin(), fVarVec.end() ), fVarVec.end());
+    for(int i = 0; i < gameBoard.getHeight(); i++){
+        for(int j = 0; j < gameBoard.getWidth(); j++){
+            if(fVarMap[key(i,j)].size() > 1){
+            sort(fVarMap[key(i,j)].begin(), fVarMap[key(i,j)].end());
+            fVarMap[key(i,j)].erase(unique(fVarMap[key(i,j)].begin(), fVarMap[key(i,j)].end() ), fVarMap[key(i,j)].end());
+            }
+        }
+    }
         //---------------------------------------------
     
-    
-    lpFile << fVarVec.at(0);
-    for(int i = 1; i<fVarVec.size(); ++i){
-        lpFile << " + " << fVarVec.at(i);
+    for(int i = 0; i < gameBoard.getHeight(); i++){
+        for(int j = 0; j < gameBoard.getWidth(); j++){
+            if(fVarMap[key(i,j)].size()>0){
+                bool firstOne = true;
+                for(auto x : fVarMap[key(i,j)]){
+                    if(!firstOne){
+                        lpFile << " + ";
+                    }
+                    firstOne = false;
+                    lpFile << x;
+                }
+                lpFile << " = 1\n";
+            }
+        }
     }
-    lpFile << " = 1\n";
-
+    cout << "\n";
     //bounds
     lpFile << "bounds\n";
-    for(auto x : fVarVec){
-        lpFile << x << " >= 0\n";
+    
+    
+    for(int i = 0; i < gameBoard.getHeight(); i++){
+        for(int j = 0; j < gameBoard.getWidth(); j++){
+            if(fVarMap[key(i,j)].size() > 1){
+                for(auto x : fVarMap[key(i,j)]){
+                    lpFile << x << " >= 0\n";
+                }
+            }
+        }
     }
+    
     for(auto x : expectedValues){
         lpFile << x << " free\n";
     }

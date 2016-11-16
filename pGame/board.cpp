@@ -165,24 +165,7 @@ double Board::reward(pair<int, int> attackerLocation, pair<int, int> i, pair<int
     std::cerr << "Error, a paradox has occured.\n";
     return 0;
 }
-//only useful for rectangular boards at the moment, returns all the coordinates of conencted nodes to given node.
-/*vector<pair<int,int>> Board::getConnectionsOfNode(pair<int,int> loc){
-    vector<pair<int, int>> connectionCoords;
-    if(loc.first>0){
-        connectionCoords.push_back(make_pair(loc.first-1, loc.second));
-    }
-    if(loc.first<height-1){
-        connectionCoords.push_back(make_pair(loc.first+1, loc.second));
-    }
-    
-    if(loc.second>0){
-        connectionCoords.push_back(make_pair(loc.first, loc.second-1));
-    }
-    if(loc.second<width-1){
-        connectionCoords.push_back(make_pair(loc.first, loc.second+1));
-    }
-    return connectionCoords;
-}*/
+
 
 vector<pair<int,int>> Board::getConnectionsOfNode(pair<int,int> loc){
     vector<pair<int, int>> connectionCoords;
