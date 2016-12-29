@@ -88,15 +88,17 @@ void LpGenerator::convertToLp(){
     int moveTax = gameBoard.getMoveTax();
     int guessTax = gameBoard.getGuessTax();
     int trueTargetReward = gameBoard.getTrueTargetReward();
+    unordered_map<string, bool> represented;
     
     for(int h = 0; h<gameBoard.getHeight(); ++h){
         for(int w = 0; w<gameBoard.getWidth(); ++w){
             for(auto at : gameBoard.getTargets()){
                 for(auto ac : gameBoard.getConnectionsOfNode(make_pair(h, w))){
                 //write the node we're working on
-                    lpFile << createLpVar("V", at, make_pair(h,w));
+                    //represented[createLpVar("V", at, make_pair(h,w))] = false;
                     //subject to
                     if(!gameBoard.isNodeATarget(make_pair(h, w))){
+                        lpFile << createLpVar("V", at, make_pair(h,w));
                         for(auto t : gameBoard.getTargets()){
                             double coef = moveTax;
                             if(t==at){
@@ -124,7 +126,16 @@ void LpGenerator::convertToLp(){
                         //used to be zero
                        // lpFile << trueTargetReward << "\n";
                     }else{
-                        lpFile << " = 0\n";
+                       if(represented[createLpVar("V", at, make_pair(h,w))] == false){
+                            lpFile <<  createLpVar("V", at, make_pair(h,w));
+                           if(at.first == h && at.second == w){
+                               lpFile << " = 0\n";
+                           }else{
+                               //lpFile << "= -100000\n";
+                               lpFile << " = 0\n";
+                           }
+                            represented[createLpVar("V", at, make_pair(h,w))] = true;
+                        }
                     }
                 }
             }

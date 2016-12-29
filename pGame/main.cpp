@@ -184,5 +184,6 @@ int main(int argc, const char * argv[]) {
     LpGenerator a(m);
     a.convertToLp();
     //cout << width;
+    cout << "execution completed\n";
     return 0;
 }
