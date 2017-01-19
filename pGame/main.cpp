@@ -173,17 +173,18 @@ int main(int argc, const char * argv[]) {
         }
     }
     
-    cout << barriers.size() << " is the b size\n";
+    //cout << barriers.size() << " is the b size\n";
     for(auto x : barriers){
         //cout << x.first.first << "," << x.first.second << ";" << x.second.first << "," << x.second.second << "\n";
     }
     Board m(width, height, targetLocations, probDistribution, trueTargetLocation, attackerStart, moveCost, predictionReward, trueTargetReward, barriers);
+    m.printBoard();
     //Board m(width, height, targetLocations, probDistribution, trueTargetLocation, attackerStart, moveCost, predictionReward, trueTargetReward);
     //m.printAllNodeInfo();
     
     LpGenerator a(m);
     a.convertToLp();
     //cout << width;
-    cout << "execution completed\n";
+    //cout << "execution completed\n";
     return 0;
 }

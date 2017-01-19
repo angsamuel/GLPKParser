@@ -180,6 +180,51 @@ bool Board::isNodeATarget(pair<int, int> loc){
     return nodes.at(loc.first).at(loc.second).isTarget;
 }
 
+//print the board
+void Board::printBoard(){
+    cout << "   ";
+    for(int i = 0; i<width; ++i){
+        cout << i << " ";
+    }
+    cout << "\n\n";
+    for(int i = 0; i<height; ++i){
+        cout << i << "  ";
+        for(int j = 0; j<width; j++){
+            if(nodes.at(i).at(j).isTarget){
+                cout << "T";
+            }else if(i==atStart.first && j==atStart.second){
+                cout << "A";
+            }else{
+                cout << "0";
+            }
+            bool printedConnection = false;
+            for(auto c : nodes.at(i).at(j).connections){
+                if(c->rCoord == i && c->cCoord == j+1){
+                   cout << "-";
+                    printedConnection = true;
+                    
+                }
+            }
+            if(!printedConnection){cout << " ";}
+        }
+        cout << "\n";
+        //vertical connection
+        cout << "   ";
+        for(int j = 0; j<width; j++){
+            cout << "";
+            bool printedConnection = false;
+            for(auto c : nodes.at(i).at(j).connections){
+                if(c->rCoord == i+1 && c->cCoord == j){
+                    cout << "| ";
+                    printedConnection = true;
+                    
+                }
+            }
+            if(!printedConnection){cout << " ";}
+        }
+        cout << "\n";
+    }
+}
 
 
 

@@ -131,7 +131,7 @@ void LpGenerator::convertToLp(){
                            if(at.first == h && at.second == w){
                                lpFile << " = 0\n";
                            }else{
-                               //lpFile << "= -100000\n";
+                               //lpFile << "= -100000\n"; //problems here with glpk
                                lpFile << " = 0\n";
                            }
                             represented[createLpVar("V", at, make_pair(h,w))] = true;
@@ -142,7 +142,7 @@ void LpGenerator::convertToLp(){
         }
     }
     //probabilities sum to zero
-        //can get expensive, look into fixing his later
+    //can get expensive, look into fixing his later
     for(int i = 0; i < gameBoard.getHeight(); i++){
         for(int j = 0; j < gameBoard.getWidth(); j++){
             if(fVarMap[key(i,j)].size() > 1){

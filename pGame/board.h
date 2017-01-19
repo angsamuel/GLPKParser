@@ -193,6 +193,8 @@ public:
     bool isNodeATarget(pair<int, int> loc);
     //creates a variable string for the .lp file. [Example]: "V((0,0),(1,1))
     string createVariableForLp(string pre, pair<int, int> assumedTarget, pair<int, int> state);
+    //prints the board
+    void printBoard();
 };
 
 
