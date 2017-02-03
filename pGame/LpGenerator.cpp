@@ -50,6 +50,7 @@ void LpGenerator::convertToLp(){
 
     vector<string> coefVec;
     vector<string> expectedValues;
+    set<string> allVs;
     
     vector<pair<int,int>> targetLocs = gameBoard.getTargets();
     for(int i = 0; i<targetLocs.size(); ++i){
@@ -58,12 +59,15 @@ void LpGenerator::convertToLp(){
         //push back corresponding variable names for expected payoff
         string variable = createLpVar("V", make_pair(targetLocs.at(i).first, targetLocs.at(i).second),gameBoard.getAtStart());
         expectedValues.push_back(variable);
+        allVs.insert(variable);
     }
 
     
     //open the file
     ofstream lpFile;
-    lpFile.open ("lpFile.lp");
+    //lpFile.open ("lpFile.lp");
+    lpFile.open(gameBoard.fileString);
+    cout << gameBoard.fileString << "\n";
     lpFile << "maximize\n";
     //write coefficients with corresponding variables for expected payoff
     for(int i = 0; i<coefVec.size(); ++i){
@@ -99,6 +103,7 @@ void LpGenerator::convertToLp(){
                     //subject to
                     if(!gameBoard.isNodeATarget(make_pair(h, w))){
                         lpFile << createLpVar("V", at, make_pair(h,w));
+                        allVs.insert(createLpVar("V", at, make_pair(h,w)));
                         for(auto t : gameBoard.getTargets()){
                             double coef = moveTax;
                             if(t==at){
@@ -122,19 +127,49 @@ void LpGenerator::convertToLp(){
                         }
                         lpFile << " - ";
                         lpFile << createLpVar("V", at, ac);
+                        allVs.insert(createLpVar("V", at, ac));
                         lpFile << " <= 0\n";
                         //used to be zero
                        // lpFile << trueTargetReward << "\n";
                     }else{
                        if(represented[createLpVar("V", at, make_pair(h,w))] == false){
-                            lpFile <<  createLpVar("V", at, make_pair(h,w));
+                           lpFile <<  createLpVar("V", at, make_pair(h,w));
+                           allVs.insert(createLpVar("V", at, make_pair(h,w)));
                            if(at.first == h && at.second == w){
                                lpFile << " = 0\n";
                            }else{
                                //lpFile << "= -100000\n"; //problems here with glpk
-                               lpFile << " = 0\n";
+                               //lpFile << " = 0\n";
+                               for(auto t : gameBoard.getTargets()){
+                                   double coef = moveTax;
+                                   if(t==at){
+                                       coef+=guessTax;
+                                   }
+                                   if(ac==at){
+                                       coef-=trueTargetReward;
+                                   }
+                                   if(coef > 0){
+                                       lpFile << " - ";
+                                   }else{
+                                       lpFile << " + ";
+                                       coef = sqrt(coef*coef);
+                                   }
+                                   lpFile << to_string(coef);
+                                   auto fTemp = createLpVar("F", t, make_pair(h, w));
+                                   lpFile << fTemp;
+                                   
+                                   fVarMap[key(h,w)].push_back(fTemp);
+                                   
+                               }
+                               lpFile << " - ";
+                               lpFile << createLpVar("V", at, ac);
+                               allVs.insert(createLpVar("V", at, ac));
+                               lpFile << " <= 0\n";
+
+                               
                            }
                             represented[createLpVar("V", at, make_pair(h,w))] = true;
+                           allVs.insert(createLpVar("V", at, make_pair(h,w)));
                         }
                     }
                 }
@@ -183,7 +218,7 @@ void LpGenerator::convertToLp(){
         }
     }
     
-    for(auto x : expectedValues){
+    for(auto x : allVs){
         lpFile << x << " free\n";
     }
     

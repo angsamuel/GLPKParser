@@ -6,6 +6,13 @@
 //  Copyright (c) 2016 Samuel Ang. All rights reserved.
 //
 
+/*
+ implement finding correct boundaries,
+ implement brute force solution and attempt to find optimal solution
+ extrapolate information,
+ implement faster solution, and compare with brute force answers
+ */
+
 #include <iostream>
 #include "board.h"
 #include <algorithm>
@@ -195,7 +202,7 @@ void Board::printBoard(){
             }else if(i==atStart.first && j==atStart.second){
                 cout << "A";
             }else{
-                cout << "0";
+                cout << "O";
             }
             bool printedConnection = false;
             for(auto c : nodes.at(i).at(j).connections){
@@ -218,6 +225,8 @@ void Board::printBoard(){
                     cout << "| ";
                     printedConnection = true;
                     
+                }else{
+                    //cout << " ";
                 }
             }
             if(!printedConnection){cout << " ";}

@@ -26,6 +26,7 @@ using std::cout;
 using std::ifstream;
 using std::getline;
 using std::stringstream;
+using std::to_string;
 int main(int argc, const char * argv[]) {
     //Board(int width, int height, vector<pair<int,int>> targetLocs, vector<double> targetProbs, pair<int, int> trueTargetLoc, pair<int, int> attackerStart, double mt, double gt, double ttr)
     int w = 3;
@@ -114,22 +115,71 @@ int main(int argc, const char * argv[]) {
         }
         if(line == "#barriers"){
             inFile >> line;
-            while(line.substr(0,1)!= "#"){
-                int i;
-                vector<int> vect;
-                stringstream ss(line);
-                while(ss>>i){
-                    vect.push_back(i);
-                    if(ss.peek() == ' ' || ss.peek() == ','){ss.ignore();}
-                    if(ss.peek() == ';'){
-                        ss.ignore();
+            if(line == "bruteforce"){
+                cout << "we got bruteforce boys\n";
+                for(int i = 0; i<height; ++i){
+                    for(int j = 0; j<width; ++j){
+                    barriers.clear();
+                        string myFileString = "";
+                        if(i>0){
+                            barriers.push_back(make_pair(make_pair(i,j),make_pair(i-1,j)));
+                            barriers.push_back(make_pair(make_pair(i-1,j), make_pair(i,j)));
+                            myFileString = "lpFiles/lpFile" + to_string(i) + "u" + to_string(j) + "a" + to_string(i-1) + "u" + to_string(j) + ".lp";
+                            cout << myFileString << "\n";
+                            Board m(width, height, targetLocations, probDistribution, trueTargetLocation, attackerStart, moveCost, predictionReward, trueTargetReward, barriers, myFileString);
+                            LpGenerator a(m);
+                            a.convertToLp();
+                        }
+                        if(i<width-1){
+                            barriers.push_back(make_pair(make_pair(i,j),make_pair(i+1,j)));
+                            barriers.push_back(make_pair(make_pair(i+1,j), make_pair(i,j)));
+                            myFileString = "lpFiles/lpFile" + to_string(i) + "u" + to_string(j) + "a" + to_string(i+1) + "u" + to_string(j) + ".lp";
+                            cout << myFileString << "\n";
+                            Board m(width, height, targetLocations, probDistribution, trueTargetLocation, attackerStart, moveCost, predictionReward, trueTargetReward, barriers, myFileString);
+                            LpGenerator a(m);
+                            a.convertToLp();
+                        }
+                        if(j<width-1){
+                            barriers.push_back(make_pair(make_pair(i,j),make_pair(i,j+1)));
+                            barriers.push_back(make_pair(make_pair(i,j+1), make_pair(i,j)));
+                            myFileString = "lpFiles/lpFile" + to_string(i) + "u" + to_string(j) + "a" + to_string(i) + "u" + to_string(j+1) + ".lp";
+                            cout << myFileString << "\n";
+                            Board m(width, height, targetLocations, probDistribution, trueTargetLocation, attackerStart, moveCost, predictionReward, trueTargetReward, barriers, myFileString);
+                            LpGenerator a(m);
+                            a.convertToLp();
+                        }
+                        if(j>0){
+                            barriers.push_back(make_pair(make_pair(i,j),make_pair(i,j-1)));
+                            barriers.push_back(make_pair(make_pair(i,j-1), make_pair(i,j)));
+                            myFileString = "lpFiles/lpFile" + to_string(i) + "u" + to_string(j) + "a" + to_string(i) + "u" + to_string(j-1) + ".lp";
+                            cout << myFileString << "\n";
+                            Board m(width, height, targetLocations, probDistribution, trueTargetLocation, attackerStart, moveCost, predictionReward, trueTargetReward, barriers, myFileString);
+                            LpGenerator a(m);
+                            a.convertToLp();
+                        }
+                    
+
                     }
                 }
-                cout << vect.size() << std::endl;
-                cout << vect.at(0) << ", " << vect.at(1) << std::endl;
-                cout << vect.at(2) << ", " << vect.at(3) << std::endl;
-                barriers.push_back(make_pair(make_pair(vect.at(0),vect.at(1)),make_pair(vect.at(2),vect.at(3))));
-                inFile >> line;
+                barriers.clear();
+            }else{
+                while(line.substr(0,1)!= "#"){
+                    int i;
+                    vector<int> vect;
+                    stringstream ss(line);
+                    while(ss>>i){
+                        vect.push_back(i);
+                        if(ss.peek() == ' ' || ss.peek() == ','){ss.ignore();}
+                        if(ss.peek() == ';'){
+                            ss.ignore();
+                        }
+                    }
+                    cout << vect.size() << std::endl;
+                    cout << vect.at(0) << ", " << vect.at(1) << std::endl;
+                    cout << vect.at(2) << ", " << vect.at(3) << std::endl;
+                    barriers.push_back(make_pair(make_pair(vect.at(0),vect.at(1)),make_pair(vect.at(2),vect.at(3))));
+                    inFile >> line;
+            }
             }
             
         }
@@ -177,7 +227,8 @@ int main(int argc, const char * argv[]) {
     for(auto x : barriers){
         //cout << x.first.first << "," << x.first.second << ";" << x.second.first << "," << x.second.second << "\n";
     }
-    Board m(width, height, targetLocations, probDistribution, trueTargetLocation, attackerStart, moveCost, predictionReward, trueTargetReward, barriers);
+    string fileString = "lpFiles/default.lp";
+    Board m(width, height, targetLocations, probDistribution, trueTargetLocation, attackerStart, moveCost, predictionReward, trueTargetReward, barriers, fileString);
     m.printBoard();
     //Board m(width, height, targetLocations, probDistribution, trueTargetLocation, attackerStart, moveCost, predictionReward, trueTargetReward);
     //m.printAllNodeInfo();
@@ -188,3 +239,25 @@ int main(int argc, const char * argv[]) {
     //cout << "execution completed\n";
     return 0;
 }
+
+/*Bash
+ 
+ #/bin/bash
+ clear
+ for C in *.lp; do count=$((count+1)); done
+ 
+ echo "processing lp files..."
+ sleep 3
+ for X in *.lp; do
+ output=$(echo $X | cut -f 1 -d '.')
+ glpsol --cpxlp $X -o $output.out --interior --log tsp.log > dev/null
+ fileProgress=$((fileProgress+1))
+ clear
+ echo -e "completed" "${fileProgress}" "/" "${count}" "files"
+ done
+ echo "process complete :^)"
+
+ 
+ 
+ 
+ */

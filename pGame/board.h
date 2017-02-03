@@ -71,15 +71,20 @@ private:
     
     //vector of barriers
     vector<pair<pair<int,int>,pair<int,int>>> barriers;
+    
+    //output file name
+public:
+    string fileString = "";
 public:
     //default constructor
     Board(){}
-    Board(int w, int h, vector<pair<int,int>> targetLocs, vector<double> targetProbs, pair<int, int> trueTargetLoc, pair<int, int> attackerStart, double mt, double gt, double ttr, vector<pair<pair<int,int>,pair<int,int>>> newBarriers){
+    Board(int w, int h, vector<pair<int,int>> targetLocs, vector<double> targetProbs, pair<int, int> trueTargetLoc, pair<int, int> attackerStart, double mt, double gt, double ttr, vector<pair<pair<int,int>,pair<int,int>>> newBarriers, string newFileString){
         barriers = newBarriers;
         trueTargetProbs = targetProbs;
         moveTax = mt;
         guessTax = gt;
         trueTargetReward = ttr;
+        fileString = newFileString;
         //fill 2D Vector with empty Nodes
         vector<Node> row;
         for(int j=0; j<w; ++j){
@@ -195,6 +200,8 @@ public:
     string createVariableForLp(string pre, pair<int, int> assumedTarget, pair<int, int> state);
     //prints the board
     void printBoard();
+    
+    
 };
 
 
