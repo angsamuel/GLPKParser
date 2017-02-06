@@ -15,7 +15,6 @@
 #include <vector>
 #include "LpGenerator.h"
 #include "glpk-4.60/src/glpk.h"
-
 #include <vector>
 #include <string>
 #include <sstream>
@@ -35,10 +34,6 @@ int main(int argc, const char * argv[]) {
     tL.push_back(make_pair(0,0));
     tL.push_back(make_pair(0,2));
     
-    vector<double> tP;
-    tP.push_back(.5);
-    tP.push_back(.5);
-    
     
     pair<int, int> ttl = make_pair(0,2);
     pair<int, int> aS = make_pair(0,1);
@@ -51,10 +46,8 @@ int main(int argc, const char * argv[]) {
     //[.5T]---[Start]---[.5F]
     //Board m(w, h, tL, tP, ttl, aS, mt, gt, ttr);
     //m.printAllNodeInfo();
-    
     //LpGenerator a(m);
     //a.convertToLp();
-    
     //string inputFile = "lpFile.in";
     int width;
     int height;
@@ -67,7 +60,6 @@ int main(int argc, const char * argv[]) {
     int predictionReward;
     int trueTargetReward;
     ifstream inFile;
-    
     inFile.open("lpFile.in");
     string line;
     while(inFile >> line){
@@ -129,8 +121,10 @@ int main(int argc, const char * argv[]) {
                             Board m(width, height, targetLocations, probDistribution, trueTargetLocation, attackerStart, moveCost, predictionReward, trueTargetReward, barriers, myFileString);
                             LpGenerator a(m);
                             a.convertToLp();
+                            m.printBoard();
+                            barriers.clear();
                         }
-                        if(i<width-1){
+                        /*if(i<width-1){
                             barriers.push_back(make_pair(make_pair(i,j),make_pair(i+1,j)));
                             barriers.push_back(make_pair(make_pair(i+1,j), make_pair(i,j)));
                             myFileString = "lpFiles/lpFile" + to_string(i) + "u" + to_string(j) + "a" + to_string(i+1) + "u" + to_string(j) + ".lp";
@@ -147,18 +141,18 @@ int main(int argc, const char * argv[]) {
                             Board m(width, height, targetLocations, probDistribution, trueTargetLocation, attackerStart, moveCost, predictionReward, trueTargetReward, barriers, myFileString);
                             LpGenerator a(m);
                             a.convertToLp();
-                        }
+                        }*/
                         if(j>0){
                             barriers.push_back(make_pair(make_pair(i,j),make_pair(i,j-1)));
                             barriers.push_back(make_pair(make_pair(i,j-1), make_pair(i,j)));
                             myFileString = "lpFiles/lpFile" + to_string(i) + "u" + to_string(j) + "a" + to_string(i) + "u" + to_string(j-1) + ".lp";
                             cout << myFileString << "\n";
-                            Board m(width, height, targetLocations, probDistribution, trueTargetLocation, attackerStart, moveCost, predictionReward, trueTargetReward, barriers, myFileString);
-                            LpGenerator a(m);
-                            a.convertToLp();
+                            Board m2(width, height, targetLocations, probDistribution, trueTargetLocation, attackerStart, moveCost, predictionReward, trueTargetReward, barriers, myFileString);
+                            LpGenerator a2(m2);
+                            a2.convertToLp();
+                            m2.printBoard();
+                            barriers.clear();
                         }
-                    
-
                     }
                 }
                 barriers.clear();

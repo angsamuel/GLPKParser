@@ -5,14 +5,12 @@
 //  Created by Samuel Ang on 8/8/16.
 //  Copyright (c) 2016 Samuel Ang. All rights reserved.
 //
-
 /*
  implement finding correct boundaries,
  implement brute force solution and attempt to find optimal solution
  extrapolate information,
  implement faster solution, and compare with brute force answers
- */
-
+*/
 #include <iostream>
 #include "board.h"
 #include <algorithm>
@@ -122,12 +120,9 @@ int Board::getWidth(){
 int Board::getHeight(){
     return height;
 }
-
 vector<pair<pair<int,int>,pair<int,int>>> Board::getBarriers(){
     return barriers;
 }
-
-
 //SET FUNCTIONS------------------------------------------------------------------------------
 //change the true target location
 void Board::setTrueTargetLoc(pair<int,int> loc){
@@ -156,7 +151,6 @@ void Board::setGuessTax(double b){
 void Board::setAtStart(pair<int,int> loc){
     atStart = loc;
 }
-
 //HELPER FUNCTIONS----------------------------------------------------------------------------
 //reward function
 double Board::reward(pair<int, int> attackerLocation, pair<int, int> i, pair<int, int> j, pair<int, int> theta){
@@ -173,15 +167,14 @@ double Board::reward(pair<int, int> attackerLocation, pair<int, int> i, pair<int
     return 0;
 }
 
-
 vector<pair<int,int>> Board::getConnectionsOfNode(pair<int,int> loc){
     vector<pair<int, int>> connectionCoords;
     for(auto x : nodes.at(loc.first).at(loc.second).connections){
         connectionCoords.push_back(make_pair(x->rCoord, x->cCoord));
     }
-    int x = 0;
     return connectionCoords;
 }
+
 //quick function that returns true if the node at the given location is a potential target
 bool Board::isNodeATarget(pair<int, int> loc){
     return nodes.at(loc.first).at(loc.second).isTarget;
@@ -209,7 +202,6 @@ void Board::printBoard(){
                 if(c->rCoord == i && c->cCoord == j+1){
                    cout << "-";
                     printedConnection = true;
-                    
                 }
             }
             if(!printedConnection){cout << " ";}
@@ -225,34 +217,10 @@ void Board::printBoard(){
                     cout << "| ";
                     printedConnection = true;
                     
-                }else{
-                    //cout << " ";
                 }
             }
-            if(!printedConnection){cout << " ";}
+            if(!printedConnection){cout << "  ";}
         }
         cout << "\n";
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
