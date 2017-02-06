@@ -48,6 +48,9 @@ private:
     //2D vector storing the nodes
     vector<vector<Node>> nodes;
     
+    //vector of barrier values
+    vector<int> barrierValues;
+    
     //list of target locations
     vector<pair<int,int>> targets;
     
@@ -78,7 +81,8 @@ public:
 public:
     //default constructor
     Board(){}
-    Board(int w, int h, vector<pair<int,int>> targetLocs, vector<double> targetProbs, pair<int, int> trueTargetLoc, pair<int, int> attackerStart, double mt, double gt, double ttr, vector<pair<pair<int,int>,pair<int,int>>> newBarriers, string newFileString){
+    Board(int w, int h, vector<pair<int,int>> targetLocs, vector<double> targetProbs, pair<int, int> trueTargetLoc, pair<int, int> attackerStart, double mt, double gt, double ttr, vector<pair<pair<int,int>,pair<int,int>>> newBarriers, string newFileString, vector<int> bv){
+        barrierValues  = bv;
         barriers = newBarriers;
         trueTargetProbs = targetProbs;
         moveTax = mt;
@@ -103,24 +107,24 @@ public:
                 nodes.at(i).at(j).rCoord = i;
                 nodes.at(i).at(j).cCoord = j;
                 if(i>0){
-                    if(!(std::find(barriers.begin(), barriers.end(), make_pair(make_pair(i,j),make_pair(i-1,j))) != barriers.end())){
+                    //if(!(std::find(barriers.begin(), barriers.end(), make_pair(make_pair(i,j),make_pair(i-1,j))) != barriers.end())){
                         nodes.at(i).at(j).connections.push_back(&nodes.at(i-1).at(j));
-                    }
+                    //}
                 }
                 if(j>0){
-                    if(!(std::find(barriers.begin(), barriers.end(), make_pair(make_pair(i,j),make_pair(i,j-1))) != barriers.end())){
+                    //if(!(std::find(barriers.begin(), barriers.end(), make_pair(make_pair(i,j),make_pair(i,j-1))) != barriers.end())){
                         nodes.at(i).at(j).connections.push_back(&nodes.at(i).at(j-1));
-                    }
+                    //}
                 }
                 if(i<height-1){
-                    if(!(std::find(barriers.begin(), barriers.end(), make_pair(make_pair(i,j),make_pair(i+1,j))) != barriers.end())){
+                    //if(!(std::find(barriers.begin(), barriers.end(), make_pair(make_pair(i,j),make_pair(i+1,j))) != barriers.end())){
                         nodes.at(i).at(j).connections.push_back(&nodes.at(i+1).at(j));
-                    }
+                    //}
                 }
                 if(j<width-1){
-                    if(!(std::find(barriers.begin(), barriers.end(), make_pair(make_pair(i,j),make_pair(i,j+1))) != barriers.end())){
+                    //if(!(std::find(barriers.begin(), barriers.end(), make_pair(make_pair(i,j),make_pair(i,j+1))) != barriers.end())){
                     nodes.at(i).at(j).connections.push_back(&nodes.at(i).at(j+1));
-                    }
+                    //}
                 }
             }
         }
@@ -175,6 +179,7 @@ public:
     int getWidth();
     int getHeight();
     vector<pair<pair<int,int>,pair<int,int>>> getBarriers();
+    vector<int> getBarrierValues();
     
 //SET FUNCTIONS------------------------------------------------------------------------------
     //change the true target location

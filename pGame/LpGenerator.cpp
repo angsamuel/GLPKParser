@@ -93,7 +93,8 @@ void LpGenerator::convertToLp(){
     int guessTax = gameBoard.getGuessTax();
     int trueTargetReward = gameBoard.getTrueTargetReward();
     unordered_map<string, bool> represented;
-    
+    auto barriers = gameBoard.getBarriers();
+    auto barrierValues = gameBoard.getBarrierValues();
     for(int h = 0; h<gameBoard.getHeight(); ++h){
         for(int w = 0; w<gameBoard.getWidth(); ++w){
             for(auto at : gameBoard.getTargets()){
@@ -106,6 +107,18 @@ void LpGenerator::convertToLp(){
                         allVs.insert(createLpVar("V", at, make_pair(h,w)));
                         for(auto t : gameBoard.getTargets()){
                             double coef = moveTax;
+                            //find barrier here and adjust coef accordingly bandaid
+                            for(int i = 0; i<barriers.size(); ++i){
+                                if(barriers.at(i) == make_pair(ac, make_pair(h,w))){
+                                    coef += barrierValues.at(i);
+                                    cout << coef << "WOW\n";
+                                }
+                                else if(barriers.at(i) == make_pair(make_pair(h,w), ac)){
+                                    coef += coef + barrierValues.at(i);
+                                    cout << coef << "WOW\n";
+                                }
+                            }
+                            cout << "WOW\n";
                             if(t==at){
                                 coef+=guessTax;
                             }
@@ -142,6 +155,17 @@ void LpGenerator::convertToLp(){
                                //lpFile << " = 0\n";
                                for(auto t : gameBoard.getTargets()){
                                    double coef = moveTax;
+                                   //find barrier here and adjust coef accordingly bandaid
+                                   for(int i = 0; i<barriers.size(); ++i){
+                                       if(barriers.at(i) == make_pair(ac, make_pair(h,w))){
+                                           coef += barrierValues.at(i);
+                                           cout << coef << "WOW\n";
+                                       }
+                                       else if(barriers.at(i) == make_pair(make_pair(h,w), ac)){
+                                           coef += coef + barrierValues.at(i);
+                                           cout << coef << "WOW\n";
+                                       }
+                                   }
                                    if(t==at){
                                        coef+=guessTax;
                                    }
